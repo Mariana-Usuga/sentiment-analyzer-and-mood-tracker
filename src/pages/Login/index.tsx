@@ -1,5 +1,6 @@
 import {
   GoogleAuthProvider,
+  getAuth,
   onAuthStateChanged,
   signInWithPopup,
 } from 'firebase/auth';
@@ -53,6 +54,9 @@ export default function LoginView() {
       if (res) {
         console.log('si existe ', res.user);
         const userDb = userExists(res.user.uid);
+        const idToken = await res.user.getIdToken();
+        console.log('Token JWT:', idToken);
+        localStorage.setItem('token', idToken);
         if (!userDb) {
           registerNewUser({
             uid: res.user.uid,
@@ -61,6 +65,14 @@ export default function LoginView() {
             email: res.user.email,
           });
         }
+      } else {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        const userCredential = await signInWithPopup(auth, provider);
+        const idToken = await userCredential.user.getIdToken();
+        console.log('Token JWT registro:', idToken);
+        localStorage.setItem('token', idToken);
+        console.log('no');
       }
     } catch (err) {
       console.error(err);

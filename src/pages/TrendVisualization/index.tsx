@@ -23,7 +23,6 @@ const TitleCalender = styled(Paper)(({ theme }) => ({
   color: '#4e73df!important',
   fontSize: '1.2rem',
   fontWeight: 'bolder',
-  fontfamily: 'emoji',
   boxShadow: '0 .18rem 1.75rem 0 rgba(58,59,69,.15)!important',
   border: '1px solid #e3e6f0',
   padding: theme.spacing(2),

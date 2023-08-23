@@ -11,7 +11,6 @@ import {
 import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close'; // Importa el icono Close
 import MoodState from './pages/MoodState';
-import openAi from './services/apiService';
 
 function App(): JSX.Element {
   //openAi()

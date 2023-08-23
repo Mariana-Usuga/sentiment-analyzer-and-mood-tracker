@@ -3,7 +3,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
   Drawer,
   List,
   ListItem,
@@ -12,13 +11,18 @@ import {
   CssBaseline,
   useMediaQuery,
   useTheme,
+  Typography,
+  Link,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Link as RouterLink } from 'react-router-dom'; // Importa el Link de React Router
+import { auth } from '../../fireabse';
 
 const drawerWidth = 240;
 
@@ -37,6 +41,16 @@ const NavBar = () => {
     <TimelineIcon />,
     <ContentPasteIcon />,
   ];
+
+  const signOut = async () => {
+    try {
+      await auth.signOut();
+      console.log('Sesión cerrada correctamente.');
+      localStorage.removeItem('token');
+    } catch (error: any) {
+      console.error('Error al cerrar sesión:', error.message);
+    }
+  };
 
   return (
     <div>
@@ -69,29 +83,53 @@ const NavBar = () => {
           <IconButton onClick={toggleDrawer}>
             {isSmallScreen ? <ChevronLeftIcon /> : null}
           </IconButton>
-          <List>
-            {[
-              { text: 'Registro de Estado de Animo', link: '/moodState' },
-              {
-                text: 'Visualizacion de Tendecias',
-                link: '/trendVisualization',
-              },
-              { text: 'Sign Out', link: '/' },
-            ].map((item, index) => (
-              <ListItem button key={item.text}>
-                <ListItemIcon>{iconMap[index]}</ListItemIcon>
-                <ListItemText
-                  primary={<Link to={item.link}>{item.text}</Link>}
-                />
-              </ListItem>
-            ))}
+          <List style={{ marginTop: '40px' }}>
+            <ListItem button style={{ padding: '20px' }}>
+              <ListItemIcon>
+                <InsertEmoticonIcon />
+              </ListItemIcon>
+              <Link
+                href='/moodState'
+                style={{
+                  textDecoration: 'none',
+                  fontSize: '1.2rem',
+                }}
+              >
+                Registro
+              </Link>
+            </ListItem>
+            <ListItem button style={{ padding: '20px' }}>
+              <ListItemIcon>
+                <TimelineIcon />
+              </ListItemIcon>
+              <Link
+                href='/trendVisualization'
+                style={{
+                  textDecoration: 'none',
+                  fontSize: '1.2rem',
+                }}
+              >
+                Visualizacion
+              </Link>
+            </ListItem>
+            <ListItem button style={{ padding: '20px' }} onClick={signOut}>
+              <ListItemIcon></ListItemIcon>
+              <Link
+                href='/'
+                style={{
+                  textDecoration: 'none',
+                  fontSize: '1.2rem',
+                }}
+              >
+                Sign Out
+              </Link>
+            </ListItem>
           </List>
         </div>
       </Drawer>
       <div
         style={{
           marginLeft: isSmallScreen ? 0 : drawerWidth,
-          padding: theme.spacing(3),
         }}
       >
         <Outlet />
@@ -101,3 +139,32 @@ const NavBar = () => {
 };
 
 export default NavBar;
+/****
+ *  <List>
+            {[
+              { text: 'Registro de Estado de Animo', link: '/moodState' },
+              {
+                text: 'Visualizacion de Tendecias',
+                link: '/trendVisualization',
+              },
+            ].map((item, index) => (
+              <ListItem button key={item.text}>
+                <ListItemIcon>{iconMap[index]}</ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography>
+                      <Link href='/'>Registro de Estado de Animo</Link>
+                      <Link href='/'>Visualizacion de Tendecias</Link>
+                      <Link href='/'>Sign Out</Link>
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
+ * 
+ * 
+ *                       <Link href={item.link}>{item.text}</Link>
+
+ *  primary={<Link to={item.link}>{item.text}</Link>}
+ */

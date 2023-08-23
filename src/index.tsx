@@ -10,28 +10,35 @@ import Layout from './components/Layout';
 import LoginView from './pages/Login';
 import Signout from './pages/Signout';
 import NavBar from './components/NavBar';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { createGlobalStyle } from 'styled-components';
+import PrivateRoute from './privateRoute';
 
-const theme = createTheme({
-  palette: {
-    background: {
-      default: '#f0f0f0', // Cambia este color al que desees
-    },
-  },
-});
+const GlobalStyles = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
+
+  body {
+    font-weight: bolder;
+    font-family: 'Poppins', sans-serif;
+    margin: 0; /* Resetear márgenes predeterminados */
+    padding: 0; /* Resetear rellenos predeterminados */
+  }
+`;
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
   <React.StrictMode>
+    <GlobalStyles />
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<LoginView />} />
         <Route path='signout' element={<Signout />} />
-        <Route path='/' element={<NavBar />}>
-          <Route path='moodState' element={<MoodState />} />
-          <Route path='trendVisualization' element={<TrendVisualization />} />
+        <Route path='/' element={<PrivateRoute />}>
+          <Route path='/' element={<NavBar />}>
+            <Route path='moodState' element={<MoodState />} />
+            <Route path='trendVisualization' element={<TrendVisualization />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
@@ -39,6 +46,13 @@ root.render(
 );
 
 /**
+ *  <PrivateRoute path='moodState' element={<MoodState />} />
+          <PrivateRoute
+            path='trendVisualization'
+            element={<TrendVisualization />}
+          />
+ <Route path='moodState' element={<MoodState />} />
+          <Route path='trendVisualization' element={<TrendVisualization />} />
  *           <Route path='/' element={<App />} />
  */
 // If you want to start measuring performance in your app, pass a function

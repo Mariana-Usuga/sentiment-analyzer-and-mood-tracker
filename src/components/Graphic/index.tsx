@@ -1,5 +1,6 @@
 import { Container } from '@mui/material';
-import React from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -9,36 +10,41 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-
-const mockData = [
-  { day: '1', emojiv: '0' },
-  { day: '2', emojiv: '1' },
-  { day: '3', emojiv: '2' },
-  { day: '4', emojiv: '3' },
-  { day: '5', emojiv: '3' },
-  { day: '6', emojiv: '3' },
-  { day: '7', emojiv: '3' },
-];
+import { auth, getUserInfo } from '../../fireabse';
 
 const Graphic = () => {
+  const [moodData, setMoodData] = useState<any[]>([]);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user: any) => {
+      if (user) {
+        const getUser = await getUserInfo(user?.uid);
+        const newArray = getUser?.moods?.map((item: any) => ({
+          day: new Date(item.date).getDate() + 1, // Obtiene el día de la fecha
+          emojiScale: item.feelingScale,
+        }));
+        setMoodData(newArray);
+      }
+    });
+  }, []);
+
   const tickFormatter = (emoji: any) => {
-    console.log('EMO ', emoji);
-    if (emoji === 0) return '😭';
-    if (emoji === 0.75) return '😞';
-    if (emoji === 1.5) return '😐';
-    if (emoji === 2.25) return '🙂';
-    if (emoji === 3) return '😄';
+    if (emoji === 1) return '😭';
+    if (emoji === 2) return '😞';
+    if (emoji === 3) return '😐';
+    if (emoji === 4) return '🙂';
+    if (emoji === 5) return '😄';
     else return emoji;
   };
 
   return (
-    <LineChart width={450} height={326} data={mockData}>
-      <CartesianGrid strokeDasharray='3 3' />
+    <LineChart width={450} height={326} data={moodData}>
+      <CartesianGrid strokeDasharray='5 2' />
       <XAxis dataKey='day' />
-      <YAxis tickFormatter={tickFormatter} />
+      <YAxis tickFormatter={tickFormatter} domain={[1, 5]} />
       <Tooltip />
       <Legend />
-      <Line dataKey='emojiv' />
+      <Line dataKey='emojiScale' key='emotion' />
     </LineChart>
   );
 };

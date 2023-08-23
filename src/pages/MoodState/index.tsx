@@ -4,6 +4,7 @@ import {
   IconButton,
   Paper,
   TextareaAutosize,
+  Typography,
 } from '@mui/material';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
@@ -12,16 +13,17 @@ import SentimentDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentDiss
 import SentimentVeryDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentVeryDissatisfiedOutlined';
 import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOutlined';
 import { red, teal, green, lightBlue, orange } from '@mui/material/colors';
-import Button, { ButtonProps } from '@mui/material/Button';
+import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, getUserInfo, updateUser } from '../../fireabse';
+import openAi from '../../services/apiService';
 
 interface ButtonStates {
   incredible: boolean;
   fine: boolean;
   sad: boolean;
-  horrible: boolean;
+  awful: boolean;
   neutral: boolean;
 }
 
@@ -31,22 +33,49 @@ const TitleSentimient = styled('div')(({ theme }) => ({
   fontfamily: 'emoji',
   padding: theme.spacing(1),
   textAlign: 'center',
-  elevation: 0, // Esto elimina el borde de Paper
+  elevation: 0,
+}));
+
+const TitleTypography = styled(Typography)(({ theme }) => ({
+  fontSize: '1.2rem',
+  fontWeight: 'bold',
+  color: '#4e73df',
+  marginBottom: theme.spacing(3),
+}));
+
+const TitleCalender = styled(Paper)(({ theme }) => ({
+  color: '#4e73df!important',
+  fontSize: '1.2rem',
+  fontWeight: 'bolder',
+  padding: theme.spacing(2),
+  boxShadow: 'none',
 }));
 
 function MoodState(): JSX.Element {
   const [textareaValue, setTextareaValue] = useState('');
   const [selectedValue, setSelectedValue] = useState('');
   const [apiResponse, setApiResponse] = useState('');
+  const [sent, setSent] = useState(false);
   const [userCurrent, setUserCurrent] = useState<any>();
-  const [userCurrentMood, setUserCurrentMood] = useState<any>();
+  const [userCurrentMood, setUserCurrentMood] = useState<any>({});
+  const [buttonClicked, setButtonClicked] = useState<ButtonStates>({
+    incredible: false,
+    fine: false,
+    neutral: false,
+    sad: false,
+    awful: false,
+  });
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user: any) => {
       //console.log('user ', user)
-      const getUser = await getUserInfo(user.uid);
-      setUserCurrent(getUser);
-      setUserCurrentMood(getUser?.moods);
+      if (user) {
+        const getUser = await getUserInfo(user?.uid);
+        setUserCurrent(getUser);
+
+        console.log('get ', getUser);
+      }
+      //setUserCurrentMood(getUser?.moods);
     });
   }, []);
 
@@ -58,42 +87,45 @@ function MoodState(): JSX.Element {
     setSelectedValue(value);
   };
 
-  const send = /*async*/ () => {
-    console.log('sele ', selectedValue);
-    //setApiResponse(/*await*/ openAi(selectedValue, textareaValue));
+  const send = async () => {
+    console.log('moods ', userCurrent.moods);
+    const responseOpenAi = await openAi(selectedValue, textareaValue);
+    setApiResponse(responseOpenAi);
+    setSent(true);
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
-
+    console.log('responseOpenAi ', responseOpenAi);
     const formattedDate = `${year}-${month}-${day}`;
+    let scale = 1;
+    if (selectedValue == 'incredible') {
+      scale = 5;
+    }
+    if (selectedValue == 'fine') {
+      scale = 4;
+    }
+    if (selectedValue == 'neutral') {
+      scale = 3;
+    }
+    if (selectedValue == 'sad') {
+      scale = 2;
+    }
 
     const newState = {
       emoji: selectedValue,
       comment: textareaValue,
       date: formattedDate,
-      diagnosis: 'habla con tus amigos',
+      diagnosis: responseOpenAi,
+      feelingScale: scale,
     };
 
     updateUser({
       uid: userCurrent?.uid,
       displayName: userCurrent?.displayName,
-      profilePicture: '',
-      moods: [...userCurrentMood, newState],
+      moods: [...userCurrent.moods, newState],
     });
   };
-
-  const sizeIcon = {
-    fontSize: '70px',
-  };
-
-  const [buttonClicked, setButtonClicked] = useState<ButtonStates>({
-    incredible: false,
-    fine: false,
-    neutral: false,
-    sad: false,
-    horrible: false,
-  });
 
   const handleButtonClick = (senti: keyof ButtonStates) => {
     setButtonClicked(prevStates => {
@@ -110,6 +142,7 @@ function MoodState(): JSX.Element {
   return (
     <>
       <Container maxWidth='sm' style={{ marginTop: '100px' }}>
+        <TitleCalender>¿Como te sientes hoy?</TitleCalender>
         <Grid container>
           <Grid item xs={2.4} textAlign='center'>
             <Button
@@ -121,8 +154,8 @@ function MoodState(): JSX.Element {
                   : teal[200],
               }}
             >
-              <IconButton onClick={() => handleIconButtonClick('incredible ')}>
-                <SentimentVerySatisfiedOutlinedIcon style={sizeIcon} />
+              <IconButton onClick={() => handleIconButtonClick('incredible')}>
+                <SentimentVerySatisfiedOutlinedIcon />
               </IconButton>
             </Button>
             <TitleSentimient>Increible</TitleSentimient>
@@ -135,8 +168,8 @@ function MoodState(): JSX.Element {
                 backgroundColor: buttonClicked?.fine ? green[800] : green[200],
               }}
             >
-              <IconButton onClick={() => handleIconButtonClick('fine ')}>
-                <SentimentSatisfiedAltOutlinedIcon style={sizeIcon} />
+              <IconButton onClick={() => handleIconButtonClick('fine')}>
+                <SentimentSatisfiedAltOutlinedIcon />
               </IconButton>
             </Button>
             <TitleSentimient>Bien</TitleSentimient>
@@ -151,8 +184,8 @@ function MoodState(): JSX.Element {
                   : lightBlue[200],
               }}
             >
-              <IconButton onClick={() => handleIconButtonClick('neutral ')}>
-                <SentimentNeutralOutlinedIcon style={sizeIcon} />
+              <IconButton onClick={() => handleIconButtonClick('neutral')}>
+                <SentimentNeutralOutlinedIcon />
               </IconButton>
             </Button>
             <TitleSentimient>Neutra</TitleSentimient>
@@ -165,8 +198,8 @@ function MoodState(): JSX.Element {
                 backgroundColor: buttonClicked?.sad ? orange[800] : orange[200],
               }}
             >
-              <IconButton onClick={() => handleIconButtonClick('sad ')}>
-                <SentimentDissatisfiedOutlinedIcon style={sizeIcon} />
+              <IconButton onClick={() => handleIconButtonClick('sad')}>
+                <SentimentDissatisfiedOutlinedIcon />
               </IconButton>
             </Button>
             <TitleSentimient>Mal</TitleSentimient>
@@ -174,13 +207,13 @@ function MoodState(): JSX.Element {
           <Grid item xs={2.4} textAlign='center'>
             <Button
               variant='contained'
-              onClick={() => handleButtonClick('horrible')}
+              onClick={() => handleButtonClick('awful')}
               style={{
-                backgroundColor: buttonClicked?.horrible ? red[800] : red[200],
+                backgroundColor: buttonClicked?.awful ? red[800] : red[200],
               }}
             >
-              <IconButton onClick={() => handleIconButtonClick('horrible ')}>
-                <SentimentVeryDissatisfiedOutlinedIcon style={sizeIcon} />
+              <IconButton onClick={() => handleIconButtonClick('awful')}>
+                <SentimentVeryDissatisfiedOutlinedIcon />
               </IconButton>
             </Button>
             <TitleSentimient>Horrible</TitleSentimient>
@@ -196,10 +229,16 @@ function MoodState(): JSX.Element {
             onChange={handleTextareaChange}
           />
         </Paper>
-        <Button variant='outlined' onClick={() => send()}>
+        <Button
+          variant='outlined'
+          disabled={sent || selectedValue === ''}
+          onClick={() => send()}
+        >
           Enviar
         </Button>
-        <h6>{apiResponse}</h6>
+        <Typography variant='body1' sx={{ marginTop: '20px' }}>
+          {apiResponse}
+        </Typography>
       </Container>
     </>
   );
