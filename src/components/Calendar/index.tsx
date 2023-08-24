@@ -26,7 +26,6 @@ const EmojiCalendar: React.FC = () => {
   const renderTileContent = ({ date }: { date: Date }) => {
     if (moodData.length > 0) {
       const matchingMood = moodData?.find(item => {
-        console.log('date ', item.date);
         return item?.date === date.toISOString().split('T')[0];
       });
       if (matchingMood?.emoji === 'incredible') {

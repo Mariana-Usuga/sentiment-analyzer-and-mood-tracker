@@ -11,24 +11,20 @@ const sentiments = {
 
 const prompt = (emojiMood: string, journalEntry: string) => {
   if (emojiMood === 'incredible' && journalEntry) {
-    console.log('1');
     return `Me siento ${sentiments[emojiMood]} porque ${journalEntry}, haz un diagnostico de lo que te dije 
     y dime si tiene relacion o sentido mi sentimiento y la razon si no tiene sentido dime un sentido 
     que este mas acorde `;
   }
   if (emojiMood === 'incredible' && !journalEntry) {
-    console.log('2');
     return `Me siento ${sentiments[emojiMood]}, haz un diagnostico de mi sentimiento`;
   }
   if (emojiMood && !journalEntry) {
-    console.log('3');
     return `Me siento ${
       sentiments[emojiMood as keyof typeof sentiments]
     }, haz un diagnostico de mi sentimiento
     y como puedo sentirme mejor`;
   }
   if (emojiMood && journalEntry) {
-    console.log('4');
     return `Me siento ${
       sentiments[emojiMood as keyof typeof sentiments]
     } porque ${journalEntry}, 
@@ -37,8 +33,6 @@ const prompt = (emojiMood: string, journalEntry: string) => {
 };
 
 export const openAi = async (emojiMood: any, journalEntry: any) => {
-  console.log('journalEntry ', process.env.REACT_APP_OPENAI_API_KEY);
-  console.log('hola ', prompt(emojiMood, journalEntry));
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/completions',
@@ -56,12 +50,11 @@ export const openAi = async (emojiMood: any, journalEntry: any) => {
     );
     return response.data.choices[0].text;
   } catch (err) {
-    console.log('ERROR ', err);
+    console.error('ERROR ', err);
   }
 };
 
 export const observedTrends = async () => {
-  console.log('journalEntry ', process.env.REACT_APP_OPENAI_API_KEY);
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/completions',
@@ -79,7 +72,7 @@ export const observedTrends = async () => {
     );
     return response.data.choices[0].text;
   } catch (err) {
-    console.log('ERROR ', err);
+    console.error('ERROR ', err);
   }
 };
 

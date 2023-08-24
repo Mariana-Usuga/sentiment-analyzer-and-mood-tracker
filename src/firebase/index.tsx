@@ -42,7 +42,6 @@ export async function existsUsername(username: string) {
   const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach(doc => {
-    console.log(doc.id, ' => ', doc.data());
     users.push(doc.data());
   });
   return users.length > 0 ? users[0].uid : null;

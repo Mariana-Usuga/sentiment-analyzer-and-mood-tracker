@@ -44,7 +44,6 @@ const NavBar: React.FC = () => {
   const signOut = async () => {
     try {
       await auth.signOut();
-      console.log('Sesión cerrada correctamente.');
       localStorage.removeItem('token');
     } catch (error) {
       const customError: CustomError = error as CustomError;

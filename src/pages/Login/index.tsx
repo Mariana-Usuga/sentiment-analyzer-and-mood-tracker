@@ -19,9 +19,6 @@ const LoginView: React.FC = () => {
     onAuthStateChanged(auth, async user => {
       if (user) {
         navigate('/moodState');
-        console.log('USER ', user);
-      } else {
-        console.log('usuario no existe');
       }
     });
   }, []);
@@ -33,10 +30,8 @@ const LoginView: React.FC = () => {
       const res = await signInWithPopup(auth, googleProvider);
 
       if (res) {
-        console.log('si existe ', res.user);
         const userDb = userExists(res.user.uid);
         const idToken = await res.user.getIdToken();
-        console.log('Token JWT:', idToken);
         localStorage.setItem('token', idToken);
         if (!userDb) {
           registerNewUser({
@@ -50,9 +45,7 @@ const LoginView: React.FC = () => {
         const provider = new GoogleAuthProvider();
         const userCredential = await signInWithPopup(auth, provider);
         const idToken = await userCredential.user.getIdToken();
-        console.log('Token JWT registro:', idToken);
         localStorage.setItem('token', idToken);
-        console.log('no');
       }
     } catch (error) {
       const customError: CustomError = error as CustomError;
