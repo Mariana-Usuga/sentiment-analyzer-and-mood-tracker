@@ -1,20 +1,21 @@
-import { onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { auth, getUserInfo } from '../../fireabse';
+import { auth, getUserInfo } from '../../firebase';
 import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOutlined';
 import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
 import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
 import SentimentDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentDissatisfiedOutlined';
 import SentimentVeryDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentVeryDissatisfiedOutlined';
 import './c.css';
+import { Mood } from '../../models/mood';
 
-const EmojiCalendar = () => {
-  const [moodData, setMoodData] = useState<any[]>([]);
+const EmojiCalendar: React.FC = () => {
+  const [moodData, setMoodData] = useState<Mood[]>([]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user: any) => {
+    onAuthStateChanged(auth, async user => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
         setMoodData(getUser?.moods);
@@ -22,7 +23,7 @@ const EmojiCalendar = () => {
     });
   }, []);
 
-  const renderTileContent = ({ date }: any) => {
+  const renderTileContent = ({ date }: { date: Date }) => {
     if (moodData.length > 0) {
       const matchingMood = moodData?.find(item => {
         console.log('date ', item.date);

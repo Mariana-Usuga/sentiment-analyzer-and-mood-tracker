@@ -1,9 +1,7 @@
 import { Mood } from './mood';
 
-export interface User {
+export type User = {
   uid: string;
   displayName: string;
-  profilePicture: string;
-  email: string;
-  moods: Mood[];
-}
+  moods: Mood[] | undefined;
+};

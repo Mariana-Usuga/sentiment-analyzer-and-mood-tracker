@@ -6,7 +6,6 @@ import {
   Drawer,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
   CssBaseline,
   useMediaQuery,
@@ -20,13 +19,12 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import { Outlet } from 'react-router-dom';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Link as RouterLink } from 'react-router-dom'; // Importa el Link de React Router
-import { auth } from '../../fireabse';
+import { auth } from '../../firebase';
+import { CustomError } from '../../models/customError';
 
 const drawerWidth = 240;
 
-const NavBar = () => {
+const NavBar: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -47,8 +45,9 @@ const NavBar = () => {
       await auth.signOut();
       console.log('Sesión cerrada correctamente.');
       localStorage.removeItem('token');
-    } catch (error: any) {
-      console.error('Error al cerrar sesión:', error.message);
+    } catch (error) {
+      const customError: CustomError = error as CustomError;
+      console.error('Error al cerrar sesión:', customError.message);
     }
   };
 
@@ -66,7 +65,7 @@ const NavBar = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' noWrap>
-            Persistent Drawer
+            Analisis de sentimientos
           </Typography>
         </Toolbar>
       </AppBar>
@@ -76,7 +75,7 @@ const NavBar = () => {
         open={isDrawerOpen}
         onClose={toggleDrawer}
         ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
+          keepMounted: true,
         }}
       >
         <div style={{ width: drawerWidth }}>
@@ -95,7 +94,7 @@ const NavBar = () => {
                   fontSize: '1.2rem',
                 }}
               >
-                Registro
+                ¿Como estas?
               </Link>
             </ListItem>
             <ListItem button style={{ padding: '20px' }}>
@@ -109,7 +108,7 @@ const NavBar = () => {
                   fontSize: '1.2rem',
                 }}
               >
-                Visualizacion
+                Tendencias
               </Link>
             </ListItem>
             <ListItem button style={{ padding: '20px' }} onClick={signOut}>
@@ -139,32 +138,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-/****
- *  <List>
-            {[
-              { text: 'Registro de Estado de Animo', link: '/moodState' },
-              {
-                text: 'Visualizacion de Tendecias',
-                link: '/trendVisualization',
-              },
-            ].map((item, index) => (
-              <ListItem button key={item.text}>
-                <ListItemIcon>{iconMap[index]}</ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography>
-                      <Link href='/'>Registro de Estado de Animo</Link>
-                      <Link href='/'>Visualizacion de Tendecias</Link>
-                      <Link href='/'>Sign Out</Link>
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
- * 
- * 
- *                       <Link href={item.link}>{item.text}</Link>
-
- *  primary={<Link to={item.link}>{item.text}</Link>}
- */

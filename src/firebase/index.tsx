@@ -58,25 +58,37 @@ export async function existsUsername(username: string) {
   return users.length > 0 ? users[0].uid : null;
 }
 
-export async function getUserInfo(uid: any) {
+export async function getUserInfo(uid: User['uid']) {
   const docRef = doc(db, 'users', uid);
   const docSnap = await getDoc(docRef);
   return docSnap.data();
 }
 
-export async function registerNewUser(user: any) {
+export async function registerNewUser(user: User) {
   try {
-    const usersRef = collection(db, 'users');
-    await setDoc(doc(usersRef, user.uid), user);
+    if (user.uid && user.displayName) {
+      const usersRef = collection(db, 'users');
+      await setDoc(doc(usersRef, user.uid), user);
+    } else {
+      console.error(
+        'Campos obligatorios (uid y displayName) no están definidos.',
+      );
+    }
   } catch (e) {
     console.error('Error adding document: ', e);
   }
 }
 
-export async function updateUser(user: any) {
+export async function updateUser(user: User) {
   try {
-    const usersRef = collection(db, 'users');
-    await setDoc(doc(usersRef, user.uid), user);
+    if (user.uid && user.displayName) {
+      const usersRef = collection(db, 'users');
+      await setDoc(doc(usersRef, user.uid), user);
+    } else {
+      console.error(
+        'Campos obligatorios (uid y displayName) no están definidos.',
+      );
+    }
   } catch (e) {
     console.error('Error adding document: ', e);
   }

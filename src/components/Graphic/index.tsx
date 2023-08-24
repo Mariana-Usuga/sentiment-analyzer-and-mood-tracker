@@ -10,13 +10,14 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { auth, getUserInfo } from '../../fireabse';
+import { auth, getUserInfo } from '../../firebase';
+import { Mood } from '../../models/mood';
 
-const Graphic = () => {
-  const [moodData, setMoodData] = useState<any[]>([]);
+const Graphic: React.FC = () => {
+  const [moodData, setMoodData] = useState<Mood[]>([]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user: any) => {
+    onAuthStateChanged(auth, async user => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
         const newArray = getUser?.moods?.map((item: any) => ({

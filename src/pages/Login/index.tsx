@@ -4,35 +4,16 @@ import {
   onAuthStateChanged,
   signInWithPopup,
 } from 'firebase/auth';
-import { useEffect, useState } from 'react';
-import { LoadingButton } from '@mui/lab';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { auth, registerNewUser, userExists } from '../../fireabse';
-import { Button, Container, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth, registerNewUser, userExists } from '../../firebase';
+import { Container, Typography } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
+import { ButtonGoogle } from './styles';
+import { CustomError } from '../../models/customError';
 
-const useStyles = makeStyles((theme: any) => ({
-  googleButton: {
-    transition: 'background-color .3s, box-shadow .3s',
-    padding: '12px 16px 12px 42px',
-    border: 'none',
-    borderRadius: '3px',
-    color: '#757575',
-    boxShadow: '0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25)',
-    fontSize: '14px',
-    fontWeight: '500',
-    '&:hover': {
-      boxShadow: '0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25)',
-    },
-  },
-}));
-
-export default function LoginView() {
-  const classes = useStyles();
+const LoginView: React.FC = () => {
   let navigate = useNavigate();
-  const [state, setCurrentState] = useState(1);
-  //const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, async user => {
@@ -60,9 +41,8 @@ export default function LoginView() {
         if (!userDb) {
           registerNewUser({
             uid: res.user.uid,
-            displayName: res.user.displayName,
-            profilePicture: '',
-            email: res.user.email,
+            displayName: res.user.displayName ?? '',
+            moods: undefined,
           });
         }
       } else {
@@ -74,9 +54,9 @@ export default function LoginView() {
         localStorage.setItem('token', idToken);
         console.log('no');
       }
-    } catch (err) {
-      console.error(err);
-      //alert(err.message);
+    } catch (error) {
+      const customError: CustomError = error as CustomError;
+      console.error('Error al cerrar sesión:', customError.message);
     }
   };
 
@@ -93,85 +73,12 @@ export default function LoginView() {
       <Typography variant='h4' gutterBottom>
         Inicia sesion con Google
       </Typography>
-      <Button onClick={handleOnClick} className={classes.googleButton}>
+      <ButtonGoogle onClick={handleOnClick}>
         <GoogleIcon />
         Google
-      </Button>
+      </ButtonGoogle>
     </Container>
   );
-}
+};
 
-/*
- fontFamily:
-      '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif',
-
-backgroundColor: '#4285F4',
-    color: '#FFFFFF',
-    '&:hover': {
-      backgroundColor: '#357AE8',
-    },*/
-/*import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-} from 'firebase/auth';
-import { auth, userExists } from '../fireabse';
-import { useEffect, useState } from 'react';
-import { LoadingButton } from '@mui/lab';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import AuthProvider from '../components/authProvider';
-
-export default function LoginView() {
-  let navigate = useNavigate();
-  const [state, setCurrentState] = useState(1);
-  /**
-   * 0: inicializado
-   * 1: loading
-   * 2: login completo
-   * 3: login pero sin registro
-   * 4: no hay nadie logueado
-   */
-//const [currentUser, setCurrentUser] = useState(null);
-
-/*const handleOnClick = async () => {
-    const googleProvider = new GoogleAuthProvider();
-    //await signInWithGoogle(googleProvider);
-
-    const signInWithGoogle = async (googleProvider: any) => {
-      try {
-        const res = await signInWithPopup(auth, googleProvider);
-        if (res) {
-          console.log(res.user);
-        }
-      } catch (err) {
-        console.error(err);
-        //alert(err.message);
-      }
-    };
-  };
-  const handleUserLoggedIn = () => {
-    navigate('/')//dashboard
-  };
-
-  const handleUserNotRegistered = () => {
-    navigate('/signout')//choose username 
-  };
-
-  const handleUserNotLoggedIn = () => {
-    setCurrentState(4)
-  };
-
-  if (state === 4) {
-    return <button onClick={handleOnClick}>FIREBASE CON google</button>;
-  }
-
-  return (
-    <AuthProvider
-      onUserLoggedIn={handleUserLoggedIn}
-      onUserNotRegistered={handleUserNotRegistered}
-      onUserNotLoggedIn={handleUserNotLoggedIn}
-    >
-      <div>Loading...</div>
-    </AuthProvider>
-  );
-}*/
+export default LoginView;

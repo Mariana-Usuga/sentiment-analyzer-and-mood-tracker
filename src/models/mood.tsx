@@ -1,6 +1,7 @@
-export interface Mood {
+export type Mood = {
   emoji: string;
-  comment: string;
-  date: Date;
+  comment: string | undefined;
+  date: string;
   diagnosis: string;
-}
+  felingScale: number;
+};

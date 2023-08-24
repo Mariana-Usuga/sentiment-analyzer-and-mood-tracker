@@ -1,8 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import NavBar from '../NavBar';
-import SideListMenu from '../SideListMenu';
 
-const Layout = () => (
+const Layout: React.FC = () => (
   <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
     <NavBar />
     <div style={{ flex: 1 }}>
