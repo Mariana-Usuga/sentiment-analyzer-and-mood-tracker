@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 type CustomButtonProps = {
   onClick?: () => void;
   disabled?: boolean;
-  children: ReactNode; // Añadir esta línea
+  children: ReactNode;
 };
 
 const CustomButton: React.FC<CustomButtonProps> = ({

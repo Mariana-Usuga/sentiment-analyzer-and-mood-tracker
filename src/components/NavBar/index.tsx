@@ -5,13 +5,9 @@ import {
   IconButton,
   Drawer,
   List,
-  ListItem,
-  ListItemIcon,
   CssBaseline,
   useMediaQuery,
   useTheme,
-  Typography,
-  Link,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -34,12 +30,6 @@ const NavBar: React.FC = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
-  const iconMap = [
-    <InsertEmoticonIcon />,
-    <TimelineIcon />,
-    <ContentPasteIcon />,
-  ];
 
   const signOut = async () => {
     try {

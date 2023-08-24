@@ -1,4 +1,3 @@
-import { Paper } from '@mui/material';
 import styled from 'styled-components';
 
 export const TitleSentimient = styled('div')(({ theme }) => ({
