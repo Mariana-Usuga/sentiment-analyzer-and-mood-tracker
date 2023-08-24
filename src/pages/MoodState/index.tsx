@@ -37,6 +37,7 @@ const MoodState: React.FC = () => {
     onAuthStateChanged(auth, async user => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
+        console.log('get ', getUser);
         setUserCurrent(getUser);
         setIsLoading(false);
       }
