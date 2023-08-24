@@ -69,7 +69,6 @@ reportWebVitals();
     "crypto-js": "^4.1.1",
     "date-fns": "^2.30.0", X
     "dayjs": "^1.11.9", X
-    "dotenv": "^16.3.1", X
     "eslint": "^8.47.0",
     "firebase": "^10.2.0", X
     "openai": "^4.0.1", X
