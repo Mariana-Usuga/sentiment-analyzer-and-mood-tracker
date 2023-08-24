@@ -1,43 +1,29 @@
-import {
-  Alert,
-  Box,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  IconButton,
-  Paper,
-  Snackbar,
-  TextareaAutosize,
-  Typography,
-} from '@mui/material';
+import { Container, Paper, Typography } from '@mui/material';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import SentimentVerySatisfiedOutlinedIcon from '@mui/icons-material/SentimentVerySatisfiedOutlined';
-import SentimentSatisfiedAltOutlinedIcon from '@mui/icons-material/SentimentSatisfiedAltOutlined';
-import SentimentDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentDissatisfiedOutlined';
-import SentimentVeryDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentVeryDissatisfiedOutlined';
-import SentimentNeutralOutlinedIcon from '@mui/icons-material/SentimentNeutralOutlined';
-import { red, teal, green, lightBlue, orange } from '@mui/material/colors';
-import Button from '@mui/material/Button';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, getUserInfo, updateUser } from '../../firebase';
 import { openAi } from '../../services/apiService';
 import { ButtonStates } from '../../models/sentimientState';
-import { TitleCalender, TitleSentimient } from './styles';
-import RadioGroup from '@mui/material/RadioGroup';
-import Radio from '@mui/material/Radio';
+import { TitleCalender } from './styles';
+import { moodButtons } from './moodButtons';
+import { scaleMappings } from './scaleMoods';
+import MoodButtonGrid from '../../components/MoodStateGrid';
+import CustomSnackbar from '../../components/CustomSnackbar';
+import CustomTextarea from '../../components/CustomTextArea';
+import CustomButton from '../../components/CustomButton';
+import RadioGroupControl from '../../components/RadioGroupControl';
 
 const MoodState: React.FC = () => {
   const [textareaValue, setTextareaValue] = useState('');
   const [selectedValue, setSelectedValue] = useState('');
   const [apiResponse, setApiResponse] = useState('');
-  const [sent, setSent] = useState(false);
   const [userCurrent, setUserCurrent] = useState<any>();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenSelectedMood, setIsOpenSelectedMood] = useState(false);
   const [openWarningYet, setOpenWarningYet] = useState(false);
-  const [selectedRadio, setSelectedRadio] = useState(false);
-  const [selectedRadioText, setSelectedRadioText] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // Estado de carga
+  const [selectedRadioText, setSelectedRadioText] = useState(
+    'Registrar estado cada dia',
+  );
 
   const [buttonClicked, setButtonClicked] = useState<ButtonStates>({
     incredible: false,
@@ -52,7 +38,8 @@ const MoodState: React.FC = () => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
         setUserCurrent(getUser);
-        console.log('get ', getUser);
+        setIsLoading(false);
+        console.log('USER ', getUser);
       }
     });
   }, []);
@@ -62,71 +49,86 @@ const MoodState: React.FC = () => {
   };
 
   const handleIconButtonClick = (value: string) => {
+    setIsOpenSelectedMood(false);
     setSelectedValue(value);
   };
 
-  const update = async () => {
-    if (selectedValue != '') {
-      console.log('moods ', userCurrent.moods);
-      const responseOpenAi = await openAi(selectedValue, textareaValue);
-      setApiResponse(responseOpenAi);
-      setSent(true);
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const day = String(currentDate.getDate()).padStart(2, '0');
-      console.log('responseOpenAi ', responseOpenAi);
-      const formattedDate = `${year}-${month}-${day}`;
-      let scale = 1;
-      if (selectedValue == 'incredible') {
-        scale = 5;
-      }
-      if (selectedValue == 'fine') {
-        scale = 4;
-      }
-      if (selectedValue == 'neutral') {
-        scale = 3;
-      }
-      if (selectedValue == 'sad') {
-        scale = 2;
-      }
+  const handleCloseSnackbar = () => {
+    setIsOpenSelectedMood(false);
+  };
 
-      const newState = {
-        emoji: selectedValue,
-        comment: textareaValue,
-        date: formattedDate,
-        diagnosis: responseOpenAi,
-        feelingScale: scale,
-      };
+  const handleCloseSnackbarYetMood = () => {
+    setOpenWarningYet(false);
+  };
 
-      updateUser({
-        uid: userCurrent?.uid,
-        displayName: userCurrent?.displayName,
-        moods: [...userCurrent.moods, newState],
-      });
-    } else {
-      console.log('entra en else');
-      setIsOpen(true);
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedRadioText(event.target.value);
+  };
+  const updateMoods = async () => {
+    if (!selectedValue) {
+      setIsOpenSelectedMood(true);
+      return;
     }
+
+    const responseOpenAi = await openAi(selectedValue, textareaValue);
+    setApiResponse(responseOpenAi);
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
+    let scale = 1;
+
+    if (
+      selectedValue === 'incredible' ||
+      selectedValue === 'fine' ||
+      selectedValue === 'neutral' ||
+      selectedValue === 'sad'
+    ) {
+      scale = scaleMappings[selectedValue];
+    }
+
+    const newState = {
+      emoji: selectedValue,
+      comment: textareaValue,
+      date: formattedDate,
+      diagnosis: responseOpenAi,
+      feelingScale: scale,
+    };
+
+    updateUser({
+      uid: userCurrent?.uid,
+      displayName: userCurrent?.displayName,
+      moods: [...userCurrent.moods, newState],
+    });
   };
 
   const send = async () => {
-    const lastDay = userCurrent.moods.slice(-1)[0];
-    const date = new Date();
-    console.log('lastDay ', lastDay);
-    const [year, month, day] = lastDay?.date?.split('-');
     if (selectedRadioText === 'Registrar mas estados de animo') {
-      update();
+      updateMoods();
+      return;
+    }
+
+    const currentDate = new Date();
+    const lastDay = userCurrent?.moods.slice(-1)[0];
+    const dateSeparate = lastDay?.date?.split('-');
+
+    if (!selectedValue) {
+      setIsOpenSelectedMood(true);
+      return;
+    }
+
+    if (Number(dateSeparate[2]) >= currentDate.getDate()) {
+      setOpenWarningYet(true);
     } else {
-      if (Number(day) >= date.getDate()) {
-        setOpenWarningYet(true);
-      } else {
-        update();
-      }
+      updateMoods();
     }
   };
 
   const handleButtonClick = (senti: keyof ButtonStates) => {
+    setIsOpenSelectedMood(false);
     setButtonClicked(prevStates => {
       const updatedStates = { ...prevStates };
       for (const key in updatedStates) {
@@ -138,168 +140,59 @@ const MoodState: React.FC = () => {
       return updatedStates;
     });
   };
-  const handleCloseSnackbar = () => {
-    setIsOpen(false);
-  };
-  const sentYet = () => {
-    setOpenWarningYet(false);
-  };
-
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedRadio(!selectedRadio);
-    setSelectedRadioText(event.target.value);
-  };
 
   return (
     <>
-      <Container maxWidth='sm' style={{ marginTop: '100px' }}>
-        <TitleCalender>¿Como te sientes hoy?</TitleCalender>
-        <Grid container>
-          <Grid item xs={2.4} textAlign='center'>
-            <Button
-              variant='contained'
-              onClick={() => handleButtonClick('incredible')}
-              style={{
-                backgroundColor: buttonClicked?.incredible
-                  ? teal[800]
-                  : teal[200],
-              }}
-            >
-              <IconButton onClick={() => handleIconButtonClick('incredible')}>
-                <SentimentVerySatisfiedOutlinedIcon />
-              </IconButton>
-            </Button>
-            <TitleSentimient>Increible</TitleSentimient>
-          </Grid>
-          <Grid item xs={2.4} textAlign='center'>
-            <Button
-              variant='contained'
-              onClick={() => handleButtonClick('fine')}
-              style={{
-                backgroundColor: buttonClicked?.fine ? green[800] : green[200],
-              }}
-            >
-              <IconButton onClick={() => handleIconButtonClick('fine')}>
-                <SentimentSatisfiedAltOutlinedIcon />
-              </IconButton>
-            </Button>
-            <TitleSentimient>Bien</TitleSentimient>
-          </Grid>
-          <Grid item xs={2.4} textAlign='center'>
-            <Button
-              variant='contained'
-              onClick={() => handleButtonClick('neutral')}
-              style={{
-                backgroundColor: buttonClicked?.neutral
-                  ? lightBlue[800]
-                  : lightBlue[200],
-              }}
-            >
-              <IconButton onClick={() => handleIconButtonClick('neutral')}>
-                <SentimentNeutralOutlinedIcon />
-              </IconButton>
-            </Button>
-            <TitleSentimient>Neutra</TitleSentimient>
-          </Grid>
-          <Grid item xs={2.4} textAlign='center'>
-            <Button
-              variant='contained'
-              onClick={() => handleButtonClick('sad')}
-              style={{
-                backgroundColor: buttonClicked?.sad ? orange[800] : orange[200],
-              }}
-            >
-              <IconButton onClick={() => handleIconButtonClick('sad')}>
-                <SentimentDissatisfiedOutlinedIcon />
-              </IconButton>
-            </Button>
-            <TitleSentimient>Mal</TitleSentimient>
-          </Grid>
-          <Grid item xs={2.4} textAlign='center'>
-            <Button
-              variant='contained'
-              onClick={() => handleButtonClick('awful')}
-              style={{
-                backgroundColor: buttonClicked?.awful ? red[800] : red[200],
-              }}
-            >
-              <IconButton onClick={() => handleIconButtonClick('awful')}>
-                <SentimentVeryDissatisfiedOutlinedIcon />
-              </IconButton>
-            </Button>
-            <TitleSentimient>Horrible</TitleSentimient>
-          </Grid>
-        </Grid>
-        <Paper elevation={3} style={{ padding: '20px' }}>
-          <TextareaAutosize
-            aria-label='empty textarea'
-            placeholder='Escribe aquí...'
-            minRows={5}
-            style={{ width: '100%' }}
-            value={textareaValue}
-            onChange={handleTextareaChange}
+      {isLoading ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+          }}
+        >
+          <Typography variant='h6'>Cargando...</Typography>
+        </div>
+      ) : (
+        <Container maxWidth='sm' style={{ marginTop: '100px' }}>
+          <TitleCalender>¿Como te sientes hoy?</TitleCalender>
+          <MoodButtonGrid
+            moodButtons={moodButtons}
+            buttonClicked={buttonClicked}
+            handleButtonClick={handleButtonClick}
+            handleIconButtonClick={handleIconButtonClick}
           />
-        </Paper>
-        <Button
-          variant='outlined'
-          style={{ marginRight: '20px' }}
-          onClick={() => send()}
-        >
-          Enviar
-        </Button>
-        <FormControl>
-          <RadioGroup
-            aria-labelledby='demo-radio-buttons-group-label'
-            defaultValue='female'
-            name='radio-buttons-group'
-            onChange={handleRadioChange}
-          >
-            <FormControlLabel
-              value='Registrar mas estados de animo'
-              control={<Radio />}
-              label='Registrar mas estados de animo'
+          <Paper elevation={3} style={{ padding: '20px' }}>
+            <CustomTextarea
+              value={textareaValue}
+              onChange={handleTextareaChange}
             />
-            <FormControlLabel
-              value='Cada dia'
-              control={<Radio />}
-              label='Cada dia'
-            />
-          </RadioGroup>
-        </FormControl>
-        <Snackbar
-          open={isOpen}
-          autoHideDuration={4000}
-          onClose={handleCloseSnackbar}
-        >
-          <Alert onClose={handleCloseSnackbar} severity='warning'>
-            Debes seleccionar un estado de animo.
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={openWarningYet}
-          autoHideDuration={4000}
-          onClose={sentYet}
-        >
-          <Alert onClose={sentYet} severity='warning'>
-            Ya ingresaste el sentimiento de hoy.
-          </Alert>
-        </Snackbar>
-        <Typography variant='body1' sx={{ marginTop: '20px' }}>
-          {apiResponse}
-        </Typography>
-      </Container>
+          </Paper>
+          <CustomButton onClick={send}>Enviar</CustomButton>
+          <RadioGroupControl
+            selectedValue={selectedRadioText}
+            onRadioChange={handleRadioChange}
+          />
+          <CustomSnackbar
+            open={isOpenSelectedMood}
+            autoHideDuration={4000}
+            onClose={handleCloseSnackbar}
+            message='Debes seleccionar un estado de animo.'
+          />
+          <CustomSnackbar
+            open={openWarningYet}
+            autoHideDuration={4000}
+            onClose={handleCloseSnackbarYetMood}
+            message='Ya ingresaste el sentimiento de hoy.'
+          />
+          <Typography variant='body1' sx={{ marginTop: '20px' }}>
+            {apiResponse}
+          </Typography>
+        </Container>
+      )}
     </>
   );
 };
 
 export default MoodState;
-
-const update = () => {};
-//              <SentimentVerySatisfiedOutlinedIcon style={sizeIcon} />
-/**    
- * <Box>
-          {iconSelected ? (
-            <Alert severity='warning'>'Selecciona un estado de animo'</Alert>
-          ) : null}
-        </Box>
- */

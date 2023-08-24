@@ -21,6 +21,7 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import { Outlet } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { CustomError } from '../../models/customError';
+import SideListMenu from '../SideListMenu';
 
 const drawerWidth = 240;
 
@@ -64,9 +65,6 @@ const NavBar: React.FC = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant='h6' noWrap>
-            Analisis de sentimientos
-          </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -83,46 +81,7 @@ const NavBar: React.FC = () => {
             {isSmallScreen ? <ChevronLeftIcon /> : null}
           </IconButton>
           <List style={{ marginTop: '40px' }}>
-            <ListItem button style={{ padding: '20px' }}>
-              <ListItemIcon>
-                <InsertEmoticonIcon />
-              </ListItemIcon>
-              <Link
-                href='/moodState'
-                style={{
-                  textDecoration: 'none',
-                  fontSize: '1.2rem',
-                }}
-              >
-                ¿Como estas?
-              </Link>
-            </ListItem>
-            <ListItem button style={{ padding: '20px' }}>
-              <ListItemIcon>
-                <TimelineIcon />
-              </ListItemIcon>
-              <Link
-                href='/trendVisualization'
-                style={{
-                  textDecoration: 'none',
-                  fontSize: '1.2rem',
-                }}
-              >
-                Tendencias
-              </Link>
-            </ListItem>
-            <ListItem button style={{ padding: '20px' }} onClick={signOut}>
-              <ListItemIcon></ListItemIcon>
-              <Link
-                href='/'
-                style={{
-                  textDecoration: 'none',
-                  fontSize: '1.2rem',
-                }}
-              >
-                Sign Out
-              </Link>
-            </ListItem>
+            <SideListMenu signOut={signOut} />
           </List>
         </div>
       </Drawer>

@@ -1,55 +1,60 @@
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Paper,
-} from '@mui/material';
-import Typography from '@mui/material/Typography';
-import ContentPaste from '@mui/icons-material/ContentPaste';
+import React from 'react';
+import { ListItem, ListItemIcon, Link } from '@mui/material';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import TimelineIcon from '@mui/icons-material/Timeline';
-// import { useState } from 'react';
-import React from 'react';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import { CustomError } from '../../models/customError';
 
-const SideListMenu: React.FC = () => {
-  // const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  //      onClose={isDrawerOpen}
+type NavListItemsProps = {
+  signOut: () => void;
+};
 
+const SideListMenu: React.FC<NavListItemsProps> = ({ signOut }) => {
   return (
-    <Paper sx={{ width: 320, maxWidth: '100%' }}>
-      <MenuList>
-        <MenuItem>
-          <ListItemIcon>
-            <InsertEmoticonIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText>Registro de Estado de Animo</ListItemText>
-          <Typography variant='body2' color='text.secondary'>
-            ⌘X
-          </Typography>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <TimelineIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText>Visualizacion de Tendecias</ListItemText>
-          <Typography variant='body2' color='text.secondary'>
-            ⌘C
-          </Typography>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <ContentPaste fontSize='small' />
-          </ListItemIcon>
-          <ListItemText>Sign Out</ListItemText>
-          <Typography variant='body2' color='text.secondary'>
-            ⌘V
-          </Typography>
-        </MenuItem>
-        <Divider />
-      </MenuList>
-    </Paper>
+    <>
+      <ListItem button style={{ padding: '20px' }}>
+        <ListItemIcon>
+          <InsertEmoticonIcon />
+        </ListItemIcon>
+        <Link
+          href='/moodState'
+          style={{
+            textDecoration: 'none',
+            fontSize: '1.2rem',
+          }}
+        >
+          ¿Como estas?
+        </Link>
+      </ListItem>
+      <ListItem button style={{ padding: '20px' }}>
+        <ListItemIcon>
+          <TimelineIcon />
+        </ListItemIcon>
+        <Link
+          href='/trendVisualization'
+          style={{
+            textDecoration: 'none',
+            fontSize: '1.2rem',
+          }}
+        >
+          Tendencias
+        </Link>
+      </ListItem>
+      <ListItem button style={{ padding: '20px' }} onClick={signOut}>
+        <ListItemIcon>
+          <ContentPasteIcon />
+        </ListItemIcon>
+        <Link
+          href='/'
+          style={{
+            textDecoration: 'none',
+            fontSize: '1.2rem',
+          }}
+        >
+          Sign Out
+        </Link>
+      </ListItem>
+    </>
   );
 };
 

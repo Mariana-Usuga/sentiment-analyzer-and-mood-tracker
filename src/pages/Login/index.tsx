@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { auth, registerNewUser, userExists } from '../../firebase';
 import { Container, Typography } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-import { ButtonGoogle } from './styles';
 import { CustomError } from '../../models/customError';
+import CustomButton from '../../components/CustomButton';
 
 const LoginView: React.FC = () => {
   let navigate = useNavigate();
@@ -73,12 +73,18 @@ const LoginView: React.FC = () => {
       <Typography variant='h4' gutterBottom>
         Inicia sesion con Google
       </Typography>
-      <ButtonGoogle onClick={handleOnClick}>
+      <CustomButton onClick={handleOnClick}>
         <GoogleIcon />
         Google
-      </ButtonGoogle>
+      </CustomButton>
     </Container>
   );
 };
 
 export default LoginView;
+/**     
+ * <ButtonGoogle onClick={handleOnClick}>
+        <GoogleIcon />
+        Google
+      </ButtonGoogle>
+ */
