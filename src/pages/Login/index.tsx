@@ -21,7 +21,7 @@ const LoginView: React.FC = () => {
         navigate('/moodState');
       }
     });
-  }, []);
+  }, [navigate]);
 
   const handleOnClick = async () => {
     const googleProvider = new GoogleAuthProvider();
