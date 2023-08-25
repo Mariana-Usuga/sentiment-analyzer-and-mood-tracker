@@ -16,12 +16,14 @@ const LoginView: React.FC = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, async user => {
+    /*onAuthStateChanged(auth, async user => {
       if (user) {
+        console.log('entra en user ');
         navigate('/moodState');
+        //window.location.reload();
       }
-    });
-  }, [navigate]);
+    });*/
+  }, []);
 
   const handleOnClick = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -30,6 +32,7 @@ const LoginView: React.FC = () => {
       const res = await signInWithPopup(auth, googleProvider);
 
       if (res) {
+        navigate('/moodState');
         const userDb = await userExists(res.user.uid);
         const idToken = await res.user.getIdToken();
         localStorage.setItem('token', idToken);
