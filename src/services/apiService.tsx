@@ -32,7 +32,11 @@ const prompt = (emojiMood: string, journalEntry: string) => {
   }
 };
 
-export const openAi = async (emojiMood: any, journalEntry: any) => {
+export const openAi = async (emojiMood: string, journalEntry: string) => {
+  console.log(
+    '${process.env.REACT_APP_OPENAI_API_KEY ',
+    process.env.REACT_APP_OPENAI_API_KEY,
+  );
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/completions',
@@ -51,6 +55,7 @@ export const openAi = async (emojiMood: any, journalEntry: any) => {
     return response.data.choices[0].text;
   } catch (err) {
     console.error('ERROR ', err);
+    return err;
   }
 };
 

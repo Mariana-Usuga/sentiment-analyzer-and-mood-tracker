@@ -20,7 +20,8 @@ const MoodState: React.FC = () => {
   const [userCurrent, setUserCurrent] = useState<any>();
   const [isOpenSelectedMood, setIsOpenSelectedMood] = useState(false);
   const [openWarningYet, setOpenWarningYet] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Estado de carga
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingApi, setIsLoadingApi] = useState(true);
   const [selectedRadioText, setSelectedRadioText] = useState(
     'Registrar estado cada dia',
   );
@@ -37,9 +38,10 @@ const MoodState: React.FC = () => {
     onAuthStateChanged(auth, async user => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
-        console.log('get ', getUser);
+        if (getUser) {
+          setIsLoading(true);
+        }
         setUserCurrent(getUser);
-        setIsLoading(false);
       }
     });
   }, []);
@@ -54,10 +56,12 @@ const MoodState: React.FC = () => {
   };
 
   const handleCloseSnackbar = () => {
+    setIsLoadingApi(true);
     setIsOpenSelectedMood(false);
   };
 
   const handleCloseSnackbarYetMood = () => {
+    setIsLoadingApi(true);
     setOpenWarningYet(false);
   };
 
@@ -71,8 +75,15 @@ const MoodState: React.FC = () => {
     }
 
     const responseOpenAi = await openAi(selectedValue, textareaValue);
-    setApiResponse(responseOpenAi);
-
+    if (responseOpenAi.message) {
+      return setApiResponse(
+        'Lo siento hay problemas con la clave de OpenAi, por favor cambia la clave',
+      );
+    } else {
+      setApiResponse(responseOpenAi);
+      if (responseOpenAi) setIsLoadingApi(true);
+    }
+    console.log('continuo');
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -106,6 +117,7 @@ const MoodState: React.FC = () => {
   };
 
   const send = async () => {
+    setIsLoadingApi(false);
     if (selectedRadioText === 'Registrar mas estados de animo') {
       updateMoods();
       return;
@@ -143,7 +155,7 @@ const MoodState: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
+      {!isLoading ? (
         <div
           style={{
             display: 'flex',
@@ -186,9 +198,13 @@ const MoodState: React.FC = () => {
             onClose={handleCloseSnackbarYetMood}
             message='Ya ingresaste el sentimiento de hoy.'
           />
-          <Typography variant='body1' sx={{ marginTop: '20px' }}>
-            {apiResponse}
-          </Typography>
+          {isLoadingApi ? (
+            <Typography variant='body1' sx={{ marginTop: '20px' }}>
+              {apiResponse}
+            </Typography>
+          ) : (
+            <Typography variant='h6'>Cargando...</Typography>
+          )}
         </Container>
       )}
     </>
