@@ -5,7 +5,3 @@ Versión simplificada de una aplicación similar a Daylio, que incluirá un par 
 ### `Nota:`
 
 Presenta problemas con la clave de OpenAI
-
-**Probar la app en local**
-
-Crear las siguientes variables de entorno

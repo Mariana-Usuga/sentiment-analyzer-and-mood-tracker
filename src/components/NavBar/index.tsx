@@ -11,9 +11,6 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
-import TimelineIcon from '@mui/icons-material/Timeline';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import { Outlet } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { CustomError } from '../../models/customError';

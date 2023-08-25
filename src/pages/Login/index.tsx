@@ -30,15 +30,14 @@ const LoginView: React.FC = () => {
       const res = await signInWithPopup(auth, googleProvider);
 
       if (res) {
-        const userDb = userExists(res.user.uid);
+        const userDb = await userExists(res.user.uid);
         const idToken = await res.user.getIdToken();
         localStorage.setItem('token', idToken);
         if (!userDb) {
-          //console.log('entra para crear el usuario');
           registerNewUser({
             uid: res.user.uid,
             displayName: res.user.displayName ?? '',
-            moods: undefined,
+            moods: [],
           });
         }
       } else {
