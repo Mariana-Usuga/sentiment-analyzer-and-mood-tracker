@@ -34,6 +34,7 @@ const LoginView: React.FC = () => {
         const idToken = await res.user.getIdToken();
         localStorage.setItem('token', idToken);
         if (!userDb) {
+          //console.log('entra para crear el usuario');
           registerNewUser({
             uid: res.user.uid,
             displayName: res.user.displayName ?? '',
