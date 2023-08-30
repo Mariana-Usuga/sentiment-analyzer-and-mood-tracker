@@ -9,31 +9,33 @@ export const moodButtons = [
   {
     key: 'incredible',
     color: teal,
-    icon: <SentimentVerySatisfiedOutlinedIcon />,
+    icon: <SentimentVerySatisfiedOutlinedIcon style={{ fontSize: '2rem' }} />,
     label: 'Increible',
   },
   {
     key: 'fine',
     color: green,
-    icon: <SentimentSatisfiedAltOutlinedIcon />,
+    icon: <SentimentSatisfiedAltOutlinedIcon style={{ fontSize: '2rem' }} />,
     label: 'Bien',
   },
   {
     key: 'neutral',
     color: lightBlue,
-    icon: <SentimentNeutralOutlinedIcon />,
+    icon: <SentimentNeutralOutlinedIcon style={{ fontSize: '2rem' }} />,
     label: 'Neutra',
   },
   {
     key: 'sad',
     color: orange,
-    icon: <SentimentDissatisfiedOutlinedIcon />,
+    icon: <SentimentDissatisfiedOutlinedIcon style={{ fontSize: '2rem' }} />,
     label: 'Mal',
   },
   {
     key: 'awful',
     color: red,
-    icon: <SentimentVeryDissatisfiedOutlinedIcon />,
+    icon: (
+      <SentimentVeryDissatisfiedOutlinedIcon style={{ fontSize: '2rem' }} />
+    ),
     label: 'Horrible',
   },
 ];

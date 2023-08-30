@@ -1,5 +1,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+//import functions 'firebase-functions');
 
 const sentiments = {
   incredible: 'increible',
@@ -33,10 +34,10 @@ const prompt = (emojiMood: string, journalEntry: string) => {
 };
 
 export const openAi = async (emojiMood: string, journalEntry: string) => {
-  console.log(
+  /*console.log(
     '${process.env.REACT_APP_OPENAI_API_KEY ',
-    process.env.REACT_APP_OPENAI_API_KEY,
-  );
+    functions.config().openai.api_key,
+  );*/
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/completions',
@@ -48,7 +49,7 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          Authorization: `Bearer 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`,
         },
       },
     );
@@ -59,7 +60,7 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
   }
 };
 
-export const observedTrends = async () => {
+/*export const observedTrends = async () => {
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/completions',
@@ -95,7 +96,7 @@ export const hashedCommentDecrypt = (encryptedText: string) => {
     CryptoJS.enc.Utf8,
   );
   return decrypted;
-};
+};*/
 
 /*  
   PRIMERO=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

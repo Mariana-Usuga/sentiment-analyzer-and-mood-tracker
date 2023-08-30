@@ -1,13 +1,13 @@
 import React from 'react';
-import { Grid, Button, IconButton } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import { ButtonStates } from '../../models/sentimientState';
 import { TitleSentimient } from '../../pages/MoodState/styles';
 
 type MoodButton = {
   key: string;
   color: {
-    200: string;
-    800: string;
+    100: string;
+    600: string;
   };
   icon: React.ReactElement;
   label: string;
@@ -31,6 +31,28 @@ const MoodButtonGrid: React.FC<MoodButtonGridProps> = ({
       {moodButtons.map(button => (
         <Grid item xs={2.4} textAlign='center' key={button.key}>
           <Button
+            onClick={() => handleButtonClick(button.key)}
+            style={{
+              color: buttonClicked[button.key] ? 'white' : button.color[600],
+              backgroundColor: buttonClicked[button.key]
+                ? button.color[600]
+                : 'white',
+              border: 'none',
+            }}
+          >
+            {button.icon}
+          </Button>
+          <TitleSentimient>{button.label}</TitleSentimient>
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
+
+export default MoodButtonGrid;
+
+/**
+ *<Button
             variant='contained'
             onClick={() => handleButtonClick(button.key)}
             style={{
@@ -43,11 +65,12 @@ const MoodButtonGrid: React.FC<MoodButtonGridProps> = ({
               {button.icon}
             </IconButton>
           </Button>
-          <TitleSentimient>{button.label}</TitleSentimient>
-        </Grid>
-      ))}
-    </Grid>
-  );
-};
+ *
 
-export default MoodButtonGrid;
+          backgroundColor: buttonClicked[button.key]
+                ? button.color[900]
+                : button.color[100],
+
+                              backgroundColor: 'white',
+
+ */

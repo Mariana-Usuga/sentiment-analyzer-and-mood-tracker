@@ -1,17 +1,13 @@
 {
   "hosting": {
     "public": "build",
-    "headers": [
+    "rewrites": [
       {
-        "source": "/**",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "http://localhost:3000"
-          }
-        ]
+        "source": "**",
+        "destination": "/index.html"
       }
-    ]
+    ],
+    "trailingSlash": false
   },
   "database": {
     "rules": "database.rules.json"

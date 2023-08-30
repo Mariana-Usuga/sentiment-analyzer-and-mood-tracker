@@ -3,4 +3,5 @@ export const scaleMappings = {
   fine: 4,
   neutral: 3,
   sad: 2,
+  awful: 1,
 };

@@ -39,18 +39,20 @@
     ]
   },
   "devDependencies": {
-    "@mui/material": "^5.14.6",
     "@date-io/date-fns": "^2.17.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.6",
+    "@mui/material": "^5.14.6",
     "@types/crypto-js": "^4.1.1",
     "axios": "^1.4.0",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.9",
     "dotenv": "^16.3.1",
+    "dotenv-cli": "^7.3.0",
     "firebase": "^10.3.0",
+    "firebase-functions": "^4.4.1",
     "openai": "^4.2.0",
     "recharts": "^2.7.3",
     "styled-components": "^6.0.7"

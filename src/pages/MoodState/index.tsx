@@ -39,6 +39,7 @@ const MoodState: React.FC = () => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
         if (getUser) {
+          console.log('user current ', getUser.moods);
           setIsLoading(true);
         }
         setUserCurrent(getUser);
@@ -68,6 +69,7 @@ const MoodState: React.FC = () => {
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRadioText(event.target.value);
   };
+
   const updateMoods = async () => {
     if (!selectedValue) {
       setIsOpenSelectedMood(true);
@@ -109,11 +111,15 @@ const MoodState: React.FC = () => {
       feelingScale: scale,
     };
 
-    updateUser({
+    const newUp = {
       uid: userCurrent?.uid,
       displayName: userCurrent?.displayName,
       moods: [...userCurrent.moods, newState],
-    });
+    };
+    console.log('newUp ', newUp);
+    console.log('newUp ', userCurrent.moods);
+    setUserCurrent(newUp);
+    updateUser(newUp);
   };
 
   const send = async () => {
@@ -126,16 +132,20 @@ const MoodState: React.FC = () => {
     const currentDate = new Date();
     const lastDay = userCurrent?.moods.slice(-1)[0];
     const dateSeparate = lastDay?.date?.split('-');
-
+    console.log('dateSeparate ', dateSeparate);
     if (!selectedValue) {
       setIsOpenSelectedMood(true);
       return;
     }
 
-    if (Number(dateSeparate[2]) >= currentDate.getDate()) {
-      setOpenWarningYet(true);
-    } else {
+    if (!dateSeparate) {
       updateMoods();
+    } else {
+      if (Number(dateSeparate[2]) >= currentDate.getDate()) {
+        setOpenWarningYet(true);
+      } else {
+        updateMoods();
+      }
     }
   };
 
