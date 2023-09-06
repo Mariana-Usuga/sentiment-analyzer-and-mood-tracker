@@ -66,7 +66,6 @@ export default MoodButtonGrid;
             </IconButton>
           </Button>
  *
-
           backgroundColor: buttonClicked[button.key]
                 ? button.color[900]
                 : button.color[100],
