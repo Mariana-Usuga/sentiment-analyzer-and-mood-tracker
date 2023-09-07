@@ -52,7 +52,7 @@ const MoodButtonGrid: React.FC<MoodButtonGridProps> = ({
 export default MoodButtonGrid;
 
 /**
- *<Button
+ <Button
             variant='contained'
             onClick={() => handleButtonClick(button.key)}
             style={{
