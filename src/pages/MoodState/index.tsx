@@ -39,7 +39,7 @@ const MoodState: React.FC = () => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
         if (getUser) {
-          console.log('user current ', getUser.moods);
+          console.log('user current moods', getUser.moods);
           setIsLoading(true);
         }
         setUserCurrent(getUser);
@@ -53,6 +53,7 @@ const MoodState: React.FC = () => {
 
   const handleIconButtonClick = (value: string) => {
     setIsOpenSelectedMood(false);
+    console.log('VALUE ', value);
     setSelectedValue(value);
   };
 
@@ -72,10 +73,11 @@ const MoodState: React.FC = () => {
 
   const updateMoods = async () => {
     if (!selectedValue) {
+      console.log('first if');
       setIsOpenSelectedMood(true);
       return;
     }
-
+    console.log('selectedValue first ', selectedValue);
     const responseOpenAi = await openAi(selectedValue, textareaValue);
     if (responseOpenAi.message) {
       return setApiResponse(
@@ -133,12 +135,15 @@ const MoodState: React.FC = () => {
     const lastDay = userCurrent?.moods.slice(-1)[0];
     const dateSeparate = lastDay?.date?.split('-');
     console.log('dateSeparate ', dateSeparate);
+    console.log('selectedValue ', selectedValue);
     if (!selectedValue) {
+      console.log('!selectedValue ', !selectedValue);
       setIsOpenSelectedMood(true);
       return;
     }
 
     if (!dateSeparate) {
+      console.log('enttra en !dateSeparate IF');
       updateMoods();
     } else {
       if (Number(dateSeparate[2]) >= currentDate.getDate()) {
@@ -150,6 +155,7 @@ const MoodState: React.FC = () => {
   };
 
   const handleButtonClick = (senti: keyof ButtonStates) => {
+    console.log('SENTI ', senti);
     setIsOpenSelectedMood(false);
     setButtonClicked(prevStates => {
       const updatedStates = { ...prevStates };
