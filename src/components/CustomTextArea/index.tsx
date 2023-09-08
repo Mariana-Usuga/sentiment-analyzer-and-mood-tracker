@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from 'react';
-import { TextareaAutosize } from '@mui/material';
+import Textarea from '@mui/joy/Textarea';
+import { TextField } from '@mui/material';
 
 type CustomTextareaProps = {
   value: string;
@@ -8,13 +9,14 @@ type CustomTextareaProps = {
 
 const CustomTextarea: React.FC<CustomTextareaProps> = ({ value, onChange }) => {
   return (
-    <TextareaAutosize
-      aria-label='empty textarea'
-      placeholder='Escribe aquí...'
-      minRows={5}
-      style={{ width: '100%' }}
+    <TextField
+      sx={{ minWidth: 500 }}
       value={value}
       onChange={onChange}
+      rows={6}
+      multiline
+      label='Mas Detalles?'
+      variant='outlined'
     />
   );
 };

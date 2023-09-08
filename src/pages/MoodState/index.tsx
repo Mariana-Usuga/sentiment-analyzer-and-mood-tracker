@@ -188,12 +188,10 @@ const MoodState: React.FC = () => {
             buttonClicked={buttonClicked}
             handleButtonClick={handleButtonClick}
           />
-          <Paper elevation={3} style={{ padding: '20px' }}>
-            <CustomTextarea
-              value={textareaValue}
-              onChange={handleTextareaChange}
-            />
-          </Paper>
+          <CustomTextarea
+            value={textareaValue}
+            onChange={handleTextareaChange}
+          />
           <CustomButton onClick={send}>Enviar</CustomButton>
           <RadioGroupControl
             selectedValue={selectedRadioText}
@@ -225,3 +223,7 @@ const MoodState: React.FC = () => {
 };
 
 export default MoodState;
+/**    
+ *           <Paper elevation={3} style={{ padding: '20px' }}>
+
+ */
