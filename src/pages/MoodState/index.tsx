@@ -15,7 +15,7 @@ import RadioGroupControl from '../../components/RadioGroupControl';
 
 const MoodState: React.FC = () => {
   const [textareaValue, setTextareaValue] = useState('');
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState<string>('');
   const [apiResponse, setApiResponse] = useState('');
   const [userCurrent, setUserCurrent] = useState<any>();
   const [isOpenSelectedMood, setIsOpenSelectedMood] = useState(false);
@@ -51,19 +51,15 @@ const MoodState: React.FC = () => {
     setTextareaValue(event.target.value);
   };
 
-  const handleIconButtonClick = (value: string) => {
-    setIsOpenSelectedMood(false);
-    console.log('VALUE ', value);
-    setSelectedValue(value);
-  };
-
   const handleCloseSnackbar = () => {
-    setIsLoadingApi(true);
+    //setIsLoadingApi(true);
+    console.log('entra en handle close sn');
     setIsOpenSelectedMood(false);
   };
 
   const handleCloseSnackbarYetMood = () => {
-    setIsLoadingApi(true);
+    //setIsLoadingApi(true);
+    console.log('entra en handle close YET MOOD');
     setOpenWarningYet(false);
   };
 
@@ -125,9 +121,10 @@ const MoodState: React.FC = () => {
   };
 
   const send = async () => {
-    setIsLoadingApi(false);
+    //setIsLoadingApi(false);
     if (selectedRadioText === 'Registrar mas estados de animo') {
       updateMoods();
+      setIsLoadingApi(false);
       return;
     }
 
@@ -139,6 +136,7 @@ const MoodState: React.FC = () => {
     if (!selectedValue) {
       console.log('!selectedValue ', !selectedValue);
       setIsOpenSelectedMood(true);
+      setApiResponse('');
       return;
     }
 
@@ -154,8 +152,8 @@ const MoodState: React.FC = () => {
     }
   };
 
-  const handleButtonClick = (senti: keyof ButtonStates) => {
-    console.log('SENTI ', senti);
+  const handleButtonClick = (senti: string) => {
+    setSelectedValue(senti);
     setIsOpenSelectedMood(false);
     setButtonClicked(prevStates => {
       const updatedStates = { ...prevStates };
@@ -189,7 +187,6 @@ const MoodState: React.FC = () => {
             moodButtons={moodButtons}
             buttonClicked={buttonClicked}
             handleButtonClick={handleButtonClick}
-            handleIconButtonClick={handleIconButtonClick}
           />
           <Paper elevation={3} style={{ padding: '20px' }}>
             <CustomTextarea

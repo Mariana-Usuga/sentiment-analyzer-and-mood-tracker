@@ -16,15 +16,15 @@ type MoodButton = {
 type MoodButtonGridProps = {
   moodButtons: MoodButton[];
   buttonClicked: ButtonStates;
-  handleButtonClick: (senti: keyof ButtonStates) => void;
-  handleIconButtonClick: (value: string) => void;
+  handleButtonClick: (senti: string) => void;
+  //handleIconButtonClick: (value: string) => void;
 };
 
 const MoodButtonGrid: React.FC<MoodButtonGridProps> = ({
   moodButtons,
   buttonClicked,
   handleButtonClick,
-  handleIconButtonClick,
+  //handleIconButtonClick,
 }) => {
   return (
     <Grid container>
