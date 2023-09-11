@@ -55,7 +55,6 @@
     "firebase-functions": "^4.4.1",
     "openai": "^4.2.0",
     "recharts": "^2.7.3",
-    "styled-components": "^6.0.7",
-    "typescript": "^5.2.2"
+    "styled-components": "^6.0.7"
   }
 }
