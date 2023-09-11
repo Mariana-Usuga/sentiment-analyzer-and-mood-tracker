@@ -48,14 +48,14 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
         },
       },
     );
     return response.data.choices[0].text;
   } catch (err) {
     console.error('ERROR ', err);
-    return err;
+    return 'Ocurrió un error al procesar la solicitud.'; // Devolver la propiedad 'error'
   }
 };
 
