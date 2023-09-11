@@ -38,8 +38,8 @@ const Graphic: React.FC = () => {
   };
 
   return (
-    <LineChart width={450} height={326} data={moodData}>
-      <CartesianGrid strokeDasharray='5 2' />
+    <LineChart width={360} height={299} data={moodData}>
+      <CartesianGrid strokeDasharray='2 2' />
       <XAxis dataKey='day' />
       <YAxis tickFormatter={tickFormatter} domain={[1, 5]} />
       <Tooltip />
@@ -50,3 +50,6 @@ const Graphic: React.FC = () => {
 };
 
 export default Graphic;
+// 380
+// width={450} height={326}
+//strokeDasharray='5 2'

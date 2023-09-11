@@ -1,6 +1,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
-//import functions 'firebase-functions');
+import functions from 'firebase-functions';
 
 const sentiments = {
   incredible: 'increible',
@@ -49,7 +49,10 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer ${
+            process.env.REACT_APP_OPENAI_API_KEY ||
+            functions.config().openai.api_key
+          }`,
         },
       },
     );

@@ -25,24 +25,22 @@ const EmojiCalendar: React.FC = () => {
 
   const renderTileContent = ({ date }: { date: Date }) => {
     if (moodData.length > 0) {
-      const matchingMood = moodData?.find(item => {
+      const filteredMoods = moodData.filter(item => {
         return item?.date === date.toISOString().split('T')[0];
       });
-      if (matchingMood?.emoji === 'incredible') {
-        return <SentimentVerySatisfiedOutlinedIcon />;
-      }
-      if (matchingMood?.emoji === 'fine') {
-        return <SentimentSatisfiedAltOutlinedIcon />;
-      }
-      if (matchingMood?.emoji === 'neutral') {
-        return <SentimentNeutralOutlinedIcon />;
-      }
-      if (matchingMood?.emoji === 'sad') {
-        return <SentimentDissatisfiedOutlinedIcon />;
-      }
-      if (matchingMood?.emoji === 'awful') {
-        return <SentimentVeryDissatisfiedOutlinedIcon />;
-      }
+
+      const latestMood = filteredMoods[filteredMoods.length - 1];
+      const emojiToIcon: Record<string, JSX.Element> = {
+        incredible: <SentimentVerySatisfiedOutlinedIcon />,
+        fine: <SentimentSatisfiedAltOutlinedIcon />,
+        neutral: <SentimentNeutralOutlinedIcon />,
+        sad: <SentimentDissatisfiedOutlinedIcon />,
+        awful: <SentimentVeryDissatisfiedOutlinedIcon />,
+      };
+
+      const moodIcon = latestMood?.emoji ? emojiToIcon[latestMood.emoji] : null;
+
+      return moodIcon;
     }
   };
 

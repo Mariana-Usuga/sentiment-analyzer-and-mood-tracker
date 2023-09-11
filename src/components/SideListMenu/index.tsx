@@ -3,6 +3,7 @@ import { ListItem, ListItemIcon, Link } from '@mui/material';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type NavListItemsProps = {
   signOut: () => void;
@@ -41,7 +42,7 @@ const SideListMenu: React.FC<NavListItemsProps> = ({ signOut }) => {
       </ListItem>
       <ListItem button style={{ padding: '20px' }} onClick={signOut}>
         <ListItemIcon>
-          <ContentPasteIcon />
+          <ArrowBackIcon />
         </ListItemIcon>
         <Link
           href='/'

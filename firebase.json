@@ -1,6 +1,9 @@
 {
   "hosting": {
     "public": "build",
+    "functions": {
+      "source": "functions"
+    },
     "rewrites": [
       {
         "source": "**",

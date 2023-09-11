@@ -1,4 +1,4 @@
-import { Container, Paper, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, getUserInfo, updateUser } from '../../firebase';
@@ -39,7 +39,6 @@ const MoodState: React.FC = () => {
       if (user) {
         const getUser = await getUserInfo(user?.uid);
         if (getUser) {
-          console.log('user current moods', getUser.moods);
           setIsLoading(true);
         }
         setUserCurrent(getUser);
@@ -52,14 +51,10 @@ const MoodState: React.FC = () => {
   };
 
   const handleCloseSnackbar = () => {
-    //setIsLoadingApi(true);
-    console.log('entra en handle close sn');
     setIsOpenSelectedMood(false);
   };
 
   const handleCloseSnackbarYetMood = () => {
-    //setIsLoadingApi(true);
-    console.log('entra en handle close YET MOOD');
     setOpenWarningYet(false);
   };
 
@@ -74,16 +69,17 @@ const MoodState: React.FC = () => {
       return;
     }
     console.log('selectedValue first ', selectedValue);
+    setIsLoadingApi(false);
     const responseOpenAi = await openAi(selectedValue, textareaValue);
     if (responseOpenAi.message) {
       return setApiResponse(
         'Lo siento hay problemas con la clave de OpenAi, por favor cambia la clave',
       );
     } else {
+      console.log('entra en LOADING');
       setApiResponse(responseOpenAi);
-      if (responseOpenAi) setIsLoadingApi(true);
+      setIsLoadingApi(true);
     }
-    console.log('continuo');
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -112,36 +108,29 @@ const MoodState: React.FC = () => {
     const newUp = {
       uid: userCurrent?.uid,
       displayName: userCurrent?.displayName,
-      moods: [...userCurrent.moods, newState],
+      moods: [...userCurrent?.moods, newState],
     };
-    console.log('newUp ', newUp);
-    console.log('newUp ', userCurrent.moods);
     setUserCurrent(newUp);
     updateUser(newUp);
   };
 
   const send = async () => {
-    //setIsLoadingApi(false);
     if (selectedRadioText === 'Registrar mas estados de animo') {
       updateMoods();
-      setIsLoadingApi(false);
       return;
     }
 
     const currentDate = new Date();
     const lastDay = userCurrent?.moods.slice(-1)[0];
     const dateSeparate = lastDay?.date?.split('-');
-    console.log('dateSeparate ', dateSeparate);
-    console.log('selectedValue ', selectedValue);
     if (!selectedValue) {
-      console.log('!selectedValue ', !selectedValue);
       setIsOpenSelectedMood(true);
       setApiResponse('');
       return;
     }
 
     if (!dateSeparate) {
-      console.log('enttra en !dateSeparate IF');
+      console.log('entra en !dateSeparate');
       updateMoods();
     } else {
       if (Number(dateSeparate[2]) >= currentDate.getDate()) {
@@ -153,6 +142,7 @@ const MoodState: React.FC = () => {
   };
 
   const handleButtonClick = (senti: string) => {
+    setTextareaValue('');
     setSelectedValue(senti);
     setIsOpenSelectedMood(false);
     setButtonClicked(prevStates => {
@@ -191,6 +181,9 @@ const MoodState: React.FC = () => {
           <CustomTextarea
             value={textareaValue}
             onChange={handleTextareaChange}
+            customStyle={{
+              margin: '10px 0 10px 0',
+            }}
           />
           <CustomButton onClick={send}>Enviar</CustomButton>
           <RadioGroupControl

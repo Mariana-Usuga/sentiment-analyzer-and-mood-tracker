@@ -20,7 +20,6 @@ const TrendVisualization: React.FC = () => {
           </Item>
         </Grid>
       </Grid>
-      <h5>Tendencias Observadas: </h5>
     </Container>
   );
 };
