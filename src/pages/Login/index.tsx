@@ -27,10 +27,10 @@ const LoginView: React.FC = () => {
       const res = await signInWithPopup(auth, googleProvider);
 
       if (res) {
-        navigate('/moodState');
         const userDb = await userExists(res.user.uid);
         const idToken = await res.user.getIdToken();
         localStorage.setItem('token', idToken);
+        navigate('/moodState');
         if (!userDb) {
           registerNewUser({
             uid: res.user.uid,
@@ -44,6 +44,7 @@ const LoginView: React.FC = () => {
         const userCredential = await signInWithPopup(auth, provider);
         const idToken = await userCredential.user.getIdToken();
         localStorage.setItem('token', idToken);
+        navigate('/moodState');
       }
     } catch (error) {
       const customError: CustomError = error as CustomError;
