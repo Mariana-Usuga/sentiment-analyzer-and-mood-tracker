@@ -1,6 +1,5 @@
 import React, { ChangeEvent, CSSProperties } from 'react';
 import Textarea from '@mui/joy/Textarea';
-import { TextField } from '@mui/material';
 
 type CustomTextareaProps = {
   value: string;

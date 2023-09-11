@@ -2,7 +2,6 @@ import React from 'react';
 import { ListItem, ListItemIcon, Link } from '@mui/material';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type NavListItemsProps = {
