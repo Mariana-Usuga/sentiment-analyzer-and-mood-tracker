@@ -71,10 +71,14 @@ const MoodState: React.FC = () => {
     console.log('selectedValue first ', selectedValue);
     setIsLoadingApi(false);
     const responseOpenAi = await openAi(selectedValue, textareaValue);
-    if (responseOpenAi.message) {
-      return setApiResponse(
+    console.log('res ', responseOpenAi);
+    if (responseOpenAi.error) {
+      console.log('entra en error');
+      setApiResponse(
         'Lo siento hay problemas con la clave de OpenAi, por favor cambia la clave',
       );
+      setIsLoadingApi(true);
+      return;
     } else {
       console.log('entra en LOADING');
       setApiResponse(responseOpenAi);
@@ -121,7 +125,7 @@ const MoodState: React.FC = () => {
     }
 
     const currentDate = new Date();
-    const lastDay = userCurrent?.moods.slice(-1)[0];
+    const lastDay = userCurrent?.moods?.slice(-1)[0];
     const dateSeparate = lastDay?.date?.split('-');
     if (!selectedValue) {
       setIsOpenSelectedMood(true);

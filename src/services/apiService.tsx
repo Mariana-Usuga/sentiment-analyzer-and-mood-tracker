@@ -55,7 +55,7 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
     return response.data.choices[0].text;
   } catch (err) {
     console.error('ERROR ', err);
-    return 'Ocurrió un error al procesar la solicitud.'; // Devolver la propiedad 'error'
+    return { error: 'Ocurrió un error al procesar la solicitud.' }; // Devolver la propiedad 'error'
   }
 };
 
