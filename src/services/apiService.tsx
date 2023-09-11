@@ -1,6 +1,5 @@
 import axios from 'axios';
-import CryptoJS from 'crypto-js';
-import functions from 'firebase-functions';
+//import functions from 'firebase-functions';
 
 const sentiments = {
   incredible: 'increible',
@@ -49,10 +48,7 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${
-            process.env.REACT_APP_OPENAI_API_KEY ||
-            functions.config().openai.api_key
-          }`,
+          Authorization: `Bearer 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`,
         },
       },
     );
@@ -63,7 +59,10 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
   }
 };
 
-/*export const observedTrends = async () => {
+/*
+functions.config().openai.api_key
+
+export const observedTrends = async () => {
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/completions',

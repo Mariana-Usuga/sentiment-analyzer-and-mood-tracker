@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "sentiment-analyzer-39767"
-  }
+    "default": "sentiment-analyzer-25b33",
+    "sentiment": "sentiment-analyzer-39767",
+    "sentiment-analyzer": "sentiment-analyzer-25b33"
+  },
+  "targets": {},
+  "etags": {}
 }
