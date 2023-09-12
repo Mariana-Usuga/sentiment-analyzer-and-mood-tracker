@@ -48,7 +48,7 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          Authorization: `Bearer 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`,
         },
       },
     );
