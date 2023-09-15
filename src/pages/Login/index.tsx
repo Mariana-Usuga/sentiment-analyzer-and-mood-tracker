@@ -1,5 +1,5 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, registerNewUser, userExists } from '../../firebase';
 import { Container, Typography } from '@mui/material';
@@ -9,6 +9,7 @@ import CustomButton from '../../components/CustomButton';
 
 const LoginView: React.FC = () => {
   let navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     /*onAuthStateChanged(auth, async user => {
@@ -21,6 +22,7 @@ const LoginView: React.FC = () => {
   }, []);
 
   const handleOnClick = async () => {
+    setIsLoading(true);
     const googleProvider = new GoogleAuthProvider();
 
     try {
@@ -50,6 +52,7 @@ const LoginView: React.FC = () => {
       const customError: CustomError = error as CustomError;
       console.error('Error al cerrar sesión:', customError.message);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -62,13 +65,21 @@ const LoginView: React.FC = () => {
         height: '100vh',
       }}
     >
-      <Typography variant='h4' gutterBottom>
-        Inicia sesion con Google
-      </Typography>
-      <CustomButton onClick={handleOnClick}>
-        <GoogleIcon />
-        Google
-      </CustomButton>
+      {isLoading ? (
+        <Typography variant='h4' gutterBottom>
+          Cargando....
+        </Typography>
+      ) : (
+        <>
+          <Typography variant='h4' gutterBottom>
+            Inicia sesion con Google
+          </Typography>
+          <CustomButton onClick={handleOnClick}>
+            <GoogleIcon />
+            Google
+          </CustomButton>
+        </>
+      )}
     </Container>
   );
 };

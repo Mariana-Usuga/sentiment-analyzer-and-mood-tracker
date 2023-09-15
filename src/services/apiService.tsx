@@ -43,12 +43,12 @@ export const openAi = async (emojiMood: string, journalEntry: string) => {
       {
         prompt: prompt(emojiMood, journalEntry),
         model: 'text-davinci-003',
-        max_tokens: 600,
+        max_tokens: 200,
       },
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer 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`,
         },
       },
     );
